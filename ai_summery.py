@@ -3,7 +3,7 @@ import asyncio
 import os
 
 def load_api_key():
-    return os.getenv("OPENAI_PRIVATE_KEY")
+    return os.getenv("OPENAI_API_KEY")
 
 async def generate_summary(api_key, text, timeout=5):
     openai.api_key = api_key

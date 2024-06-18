@@ -5,7 +5,7 @@ import os
 
 
 def load_and_print_api_key():
-    api_key = os.getenv("OPENAI_PRIVATE_KEY")
+    api_key = os.getenv("OPENAI_API_KEY")
     print(f"Loaded OpenAI API key from environment: {api_key}")
     return api_key
 
