@@ -1,11 +1,9 @@
 import openai
 import asyncio
+import os
 
-
-def load_api_key(filepath):
-    with open(filepath, "r") as file:
-        return file.read().strip()
-
+def load_api_key():
+    return os.getenv("OPENAI_PRIVATE_KEY")
 
 async def generate_summary(api_key, text, timeout=5):
     openai.api_key = api_key
@@ -24,11 +22,10 @@ async def generate_summary(api_key, text, timeout=5):
                                        "so they can study efficiently and clearly. Provide concise information without headings or chapter titles. "
                                        "If there are important concepts mentioned for the first time, provide an explanation for them. "
                                        "If a concept is touched upon multiple times in the presentation, try to expand the explanation to make it educational.",
-
                         },
                         {"role": "user", "content": text},
                     ],
-                ),
+                )
             ),
             timeout,
         )
