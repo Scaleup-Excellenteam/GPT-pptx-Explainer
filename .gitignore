@@ -1,2 +1,5 @@
 openAi_key.txt
 example_pptx.pptx
+__pycache__
+outputs
+MST.pptx

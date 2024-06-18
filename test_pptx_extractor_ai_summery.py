@@ -43,7 +43,7 @@ async def test_empty_presentation():
     output_file = os.path.join('outputs', 'EMPTY.json')
     assert os.path.isfile(output_file), "Output JSON file was not created"
 
-    with open(output_file, 'r') as file:
+    with open(output_file, 'r', encoding='utf-8') as file:
         data = json.load(file)
         assert len(data) == 0, "Output JSON should be empty for an empty presentation"
 

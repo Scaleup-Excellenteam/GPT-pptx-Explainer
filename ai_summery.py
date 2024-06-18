@@ -3,9 +3,9 @@ import asyncio
 import os
 
 def load_api_key():
-    return os.getenv("OPENAI_API_KEY")
+    return os.getenv("OPENAI_PRIVATE_KEY")
 
-async def generate_summary(api_key, text, timeout=5):
+async def generate_summary(api_key, text, timeout=15):
     openai.api_key = api_key
     loop = asyncio.get_event_loop()
     try:

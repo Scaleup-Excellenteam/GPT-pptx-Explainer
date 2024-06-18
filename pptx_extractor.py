@@ -8,10 +8,14 @@ async def fetch_summary(ai_key, slide_text):
     return await ai_summery.generate_summary(ai_key, slide_text)
 
 def extract_slide_text(slide, counter):
-    slide_text = 'Slide number: ' + str(counter) + '\n'
+    slide_text = f"Slide number: {counter}\n"
     for shape in slide.shapes:
         if hasattr(shape, 'text'):
-            slide_text += shape.text.strip() + '\n'
+            try:
+                text = shape.text.strip()
+                slide_text += text.encode('utf-8').decode('utf-8') + '\n'
+            except UnicodeEncodeError:
+                slide_text += "[Error: Unable to decode text]\n"
     return slide_text.strip()
 
 def create_tasks_from_presentation(presentation_path, ai_key):
@@ -50,5 +54,5 @@ def text_to_json_file(summarized_text, path):
     os.makedirs(output_directory, exist_ok=True)
     
     json_file_name = os.path.join(output_directory, name + '.json')
-    with open(json_file_name, 'w') as writer:
-        json.dump(summarized_text, writer, indent=4)
+    with open(json_file_name, 'w', encoding='utf-8') as writer:
+        json.dump(summarized_text, writer, indent=4, ensure_ascii=False)
