@@ -20,7 +20,11 @@ async def generate_summary(api_key, text, timeout=5):
                     messages=[
                         {
                             "role": "system",
-                            "content": "You are an assistant that helps students summarize lectures from PPTX presentations so they can study efficiently and clearly. Provide concise information without headings or chapter titles.",
+                            "content": "You are an assistant that helps computer science students summarize lectures from PPTX presentations "
+                                       "so they can study efficiently and clearly. Provide concise information without headings or chapter titles. "
+                                       "If there are important concepts mentioned for the first time, provide an explanation for them. "
+                                       "If a concept is touched upon multiple times in the presentation, try to expand the explanation to make it educational.",
+
                         },
                         {"role": "user", "content": text},
                     ],
@@ -28,6 +32,7 @@ async def generate_summary(api_key, text, timeout=5):
             ),
             timeout,
         )
-        return response.choices[0].message["content"].strip()
+        summary = response.choices[0].message["content"].strip()
+        return summary
     except asyncio.TimeoutError:
         return "Summary generation timed out."
