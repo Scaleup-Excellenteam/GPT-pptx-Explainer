@@ -7,7 +7,6 @@ def load_api_key():
 
 async def generate_summary(api_key, text, timeout=5):
     openai.api_key = api_key
-
     loop = asyncio.get_event_loop()
     try:
         response = await asyncio.wait_for(
@@ -25,7 +24,7 @@ async def generate_summary(api_key, text, timeout=5):
                         },
                         {"role": "user", "content": text},
                     ],
-                )
+                ),
             ),
             timeout,
         )

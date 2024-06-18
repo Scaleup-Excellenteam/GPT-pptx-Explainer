@@ -7,6 +7,7 @@ import ai_summery
 async def fetch_summary(ai_key, slide_text):
     return await ai_summery.generate_summary(ai_key, slide_text)
 
+# extract text from a slide
 def extract_slide_text(slide, counter):
     slide_text = 'Slide number: ' + str(counter) + '\n'
     for shape in slide.shapes:
@@ -14,6 +15,7 @@ def extract_slide_text(slide, counter):
             slide_text += shape.text.strip() + '\n'
     return slide_text.strip()
 
+# create async tasks for each slide
 def create_tasks_from_presentation(presentation_path, ai_key):
     presentation = Presentation(presentation_path)
     tasks = []
@@ -26,6 +28,7 @@ def create_tasks_from_presentation(presentation_path, ai_key):
         counter += 1
     return tasks
 
+# async function to extract and summarize the text
 async def extract_text_from_presentation(presentation_path, ai_key):
     tasks = create_tasks_from_presentation(presentation_path, ai_key)
     text = {}
