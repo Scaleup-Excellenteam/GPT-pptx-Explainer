@@ -27,7 +27,6 @@ async def process_slide(ai_key: str, counter: int, slide_text: str) -> tuple[int
         tuple[int, str]: A tuple containing the slide number and the generated summary.
     """
     try:
-        print(f"Processing task for slide {counter}...")
         summary = await fetch_summary(ai_key, slide_text)
         return (counter, summary)
     except asyncio.CancelledError:

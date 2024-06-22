@@ -52,7 +52,7 @@ def extract_text_from_presentation(presentation_path: str) -> list[tuple[int, st
         if slide_text:
             slides_text.append((counter, slide_text))
         counter += 1
-    print(f"Extracted text from {len(slides_text)} slides.")
+    print("Extracting text from slides...")
     return slides_text
 
 def text_to_json_file(summarized_text: dict[int, str], path: str) -> None:
