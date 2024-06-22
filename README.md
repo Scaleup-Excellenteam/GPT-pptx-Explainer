@@ -24,9 +24,9 @@ GPT-Explainer is a Python script designed to help computer science students unde
 ## Usage
 
 You can run the script using the command line:
-bash
+```bash
 python main.py <relative_path>
-
+```
 Alternatively, you can run it directly and provide the paths when prompted:
 
 ```bash

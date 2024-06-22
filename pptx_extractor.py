@@ -1,13 +1,18 @@
 from pptx import Presentation
 import os
 import json
-import asyncio
-import ai_summery
 
-async def fetch_summary(ai_key, slide_text):
-    return await ai_summery.generate_summary(ai_key, slide_text)
+def extract_slide_text(slide, counter) -> str:
+    """
+    Extracts text from a slide and formats it with the slide number.
 
-def extract_slide_text(slide, counter):
+    Args:
+        slide (Slide): The slide object from which to extract text.
+        counter (int): The slide number.
+
+    Returns:
+        str: The extracted text formatted with the slide number.
+    """
     slide_text = f"Slide number: {counter}\n"
     for shape in slide.shapes:
         if hasattr(shape, 'text'):
@@ -18,7 +23,20 @@ def extract_slide_text(slide, counter):
                 slide_text += "[Error: Unable to decode text]\n"
     return slide_text.strip()
 
-def create_tasks_from_presentation(presentation_path, ai_key):
+def extract_text_from_presentation(presentation_path: str) -> list[tuple[int, str]]:
+    """
+    Extracts text from all slides in a presentation.
+
+    Args:
+        presentation_path (str): The path to the presentation file.
+
+    Returns:
+        list[tuple[int, str]]: A list of tuples, each containing a slide number and its text content.
+    
+    Raises:
+        FileNotFoundError: If the presentation file does not exist.
+        Exception: If there is an error loading the presentation.
+    """
     if not os.path.isfile(presentation_path):
         raise FileNotFoundError(f"The presentation file '{presentation_path}' does not exist.")
     
@@ -27,28 +45,27 @@ def create_tasks_from_presentation(presentation_path, ai_key):
     except Exception as e:
         raise Exception(f"Failed to load presentation: {e}")
 
-    tasks = []
+    slides_text = []
     counter = 1
     for slide in presentation.slides:
         slide_text = extract_slide_text(slide, counter)
         if slide_text:
-            task = asyncio.create_task(fetch_summary(ai_key, slide_text))
-            tasks.append((counter, task))
+            slides_text.append((counter, slide_text))
         counter += 1
-    return tasks
+    print(f"Extracted text from {len(slides_text)} slides.")
+    return slides_text
 
-async def extract_text_from_presentation(presentation_path, ai_key):
-    tasks = create_tasks_from_presentation(presentation_path, ai_key)
-    text = {}
-    for counter, task in tasks:
-        try:
-            summary = await task
-            text[counter] = summary
-        except Exception as e:
-            text[counter] = f"Error summarizing slide: {e}"
-    return text
+def text_to_json_file(summarized_text: dict[int, str], path: str) -> None:
+    """
+    Saves the summarized text to a JSON file.
 
-def text_to_json_file(summarized_text, path):
+    Args:
+        summarized_text (dict[int, str]): A dictionary containing slide numbers and their corresponding summaries.
+        path (str): The path to the original presentation file.
+
+    Returns:
+        None
+    """
     name = os.path.splitext(os.path.basename(path))[0]
     output_directory = os.path.join(os.getcwd(), 'outputs')
     os.makedirs(output_directory, exist_ok=True)

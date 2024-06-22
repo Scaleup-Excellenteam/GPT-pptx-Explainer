@@ -2,10 +2,27 @@ import openai
 import asyncio
 import os
 
-def load_api_key():
-    return os.getenv("OPENAI_PRIVATE_KEY")
+def load_api_key() -> str:
+    """
+    Load the OpenAI API key from environment variables.
 
-async def generate_summary(api_key, text, timeout=15):
+    Returns:
+        str: The OpenAI API key.
+    """
+    return os.getenv("OPENAI_API_KEY")
+
+async def generate_summary(api_key: str, text: str, timeout: int = 15) -> str:
+    """
+    Generate a summary using the OpenAI GPT-3.5 API.
+
+    Args:
+        api_key (str): The OpenAI API key.
+        text (str): The text to be summarized.
+        timeout (int): Timeout for the API request in seconds.
+
+    Returns:
+        str: The generated summary or a timeout message if the request times out.
+    """
     openai.api_key = api_key
     loop = asyncio.get_event_loop()
     try:
