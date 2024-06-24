@@ -67,7 +67,11 @@ def text_to_json_file(summarized_text: dict[int, str], path: str) -> None:
         None
     """
     name = os.path.splitext(os.path.basename(path))[0]
-    output_directory = os.path.join(os.getcwd(), 'outputs')
+    
+
+    #print the name of the curr directory)
+    print(os.path.basename(os.getcwd()))
+    output_directory = os.path.join(os.getcwd(), 'outputs') 
     os.makedirs(output_directory, exist_ok=True)
     
     json_file_name = os.path.join(output_directory, name + '.json')
