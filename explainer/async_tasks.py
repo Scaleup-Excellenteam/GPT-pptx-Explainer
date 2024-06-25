@@ -1,5 +1,8 @@
 import asyncio
 from ai_api import generate_summary
+import logging
+
+logger = logging.getLogger('ExplainerLogger')
 
 async def fetch_summary(ai_key: str, slide_text: str) -> str:
     """
@@ -28,12 +31,13 @@ async def process_slide(ai_key: str, counter: int, slide_text: str) -> tuple[int
     """
     try:
         summary = await fetch_summary(ai_key, slide_text)
+        logger.info(f"Processed slide {counter}")
         return (counter, summary)
     except asyncio.CancelledError:
-        print(f"Task for slide {counter} was cancelled.")
+        logger.warning(f"Task for slide {counter} was cancelled.")
         return (counter, "Task was cancelled.")
     except Exception as e:
-        print(f"Error processing task for slide {counter}: {e}")
+        logger.error(f"Error processing task for slide {counter}: {e}")
         return (counter, f"Error summarizing slide: {e}")
 
 async def process_presentation(slides_text: list[tuple[int, str]], ai_key: str) -> dict[int, str]:
@@ -49,4 +53,5 @@ async def process_presentation(slides_text: list[tuple[int, str]], ai_key: str) 
     """
     tasks = [process_slide(ai_key, counter, slide_text) for counter, slide_text in slides_text]
     summaries = await asyncio.gather(*tasks)
+    logger.info("Completed processing all slides")
     return {counter: summary for counter, summary in summaries}

@@ -1,6 +1,9 @@
 from pptx import Presentation
 import os
 import json
+import logging
+
+logger = logging.getLogger('ExplainerLogger')
 
 def extract_slide_text(slide, counter) -> str:
     """
@@ -52,7 +55,7 @@ def extract_text_from_presentation(presentation_path: str) -> list[tuple[int, st
         if slide_text:
             slides_text.append((counter, slide_text))
         counter += 1
-    print("Extracting text from slides...")
+    logger.info(f"Extracted text from {len(slides_text)} slides in {presentation_path}")
     return slides_text
 
 def text_to_json_file(summarized_text: dict[int, str], path: str) -> None:
@@ -67,13 +70,10 @@ def text_to_json_file(summarized_text: dict[int, str], path: str) -> None:
         None
     """
     name = os.path.splitext(os.path.basename(path))[0]
-    
-
-    #print the name of the curr directory)
-    print(os.path.basename(os.getcwd()))
     output_directory = os.path.join(os.getcwd(), 'outputs') 
     os.makedirs(output_directory, exist_ok=True)
     
     json_file_name = os.path.join(output_directory, name + '.json')
     with open(json_file_name, 'w', encoding='utf-8') as writer:
         json.dump(summarized_text, writer, indent=4, ensure_ascii=False)
+    logger.info(f"Summarized text saved to {json_file_name}")

@@ -1,6 +1,9 @@
 import openai
 import asyncio
 import os
+import logging
+
+logger = logging.getLogger('ExplainerLogger')
 
 def load_api_key() -> str:
     """
@@ -46,6 +49,8 @@ async def generate_summary(api_key: str, text: str, timeout: int = 15) -> str:
             timeout,
         )
         summary = response.choices[0].message["content"].strip()
+        logger.info("Generated summary using OpenAI API")
         return summary
     except asyncio.TimeoutError:
+        logger.error("Summary generation timed out")
         return "Summary generation timed out."
