@@ -54,6 +54,7 @@ class Status:
             logger.error(f"Error getting status: {e}")
             raise e
         
+      
 def input_path():
     while True:
         path = input("Enter the path of the file or 'r' to return menu: ")
