@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 import logging
 from logging.handlers import TimedRotatingFileHandler
+import argparse
 
 LOGS_FOLDER = r'logs'
 os.makedirs(LOGS_FOLDER, exist_ok=True)
@@ -53,29 +54,47 @@ class Status:
             logger.error(f"Error getting status: {e}")
             raise e
         
-if __name__ == "__main__":
+def input_path():
     while True:
-        path = input("Enter the path of the file: ")
-        if path.lower() == "exit":
-            exit(0)
+        path = input("Enter the path of the file or 'r' to return menu: ")
+        if path == "r": return
+        if not os.path.exists(path):
+            logger.error(f"An error occurred: File not found. Please enter a valid path.")
+            continue
         try:
             uid = Status.upload_file(path)
             print(f"Uploaded file with uid: {uid}")
-            print("Waiting for summarization to complete", end="", flush=True)
-                    
-            status = Status.get_status(uid)
-            counter = 1
-            while not status.is_completed():
-                if counter % 4 == 0:
-                    print()
-                else:
-                    print(".", end="", flush=True)
-                counter += 1
-                time.sleep(0.5)
-                status = Status.get_status(uid)
-            
-            print(f"\nSummaries: {status.summaries}")
-            logger.info(f"Summarization completed for UID: {uid}")
+        
         except Exception as e:
-            logger.error(f"An error occurred: {e}")
-            print(f"An error occurred: {e}")
+                logger.error(f"An error occurred: {e}")
+                print(f"An error occurred: {e}")
+    
+    
+def check_status():
+    path = input("Enter the UID of the file: ")
+    try:
+        status = Status.get_status(path)
+        print(f"Status: {status.status}")
+        if status.is_completed():
+            print(f"Summaries: {status.summaries}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        logger.error(f"An error occurred: {e}")
+    
+        
+        
+def interactive_mode():
+    while True:
+        choice = input("Enter 1 to upload a file, 2 to check status, or 3 to exit: ")
+        if choice != "1" and choice != "2" and choice != "3":
+            print("Invalid choice. Please try again.")
+            continue
+        if choice == "3": exit(0)
+        if choice == "1": input_path()
+        if choice == "2": check_status()
+        
+        
+            
+        
+if __name__ == "__main__":
+    interactive_mode()
