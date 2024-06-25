@@ -1,60 +1,86 @@
-# README - GPT PPTX Summerizer
+# README - GPT PPTX Summarizer
 
 ## Overview
 
-GPT-Explainer is a Python script designed to help computer science students understand their lecture presentations better. The script takes a PowerPoint presentation (`.pptx` file) as input, sends the text from each slide to the GPT-3.5 AI model, and saves the summarized results in a JSON file. This tool can be particularly useful for clarifying complex concepts and providing detailed explanations.
+GPT-Explainer is a Python-based project designed to assist computer science students in understanding their lecture presentations more effectively. The script takes a PowerPoint presentation (`.pptx` file), extracts the text from each slide, sends the text to the GPT-3.5 AI model, and saves the summarized results in a JSON file. This tool is particularly useful for clarifying complex concepts and providing detailed explanations.
 
-## Features
+## Usage Instructions
 
-- Extracts text from PowerPoint presentations.
-- Summarizes the content using OpenAI's GPT-3.5 AI model.
-- Handles slides with multiple text boxes.
-- Creates asynchronous API calls for faster processing.
-- Saves the summarized text in a JSON file.
-- Handles errors gracefully and continues processing other slides.
-- CLI interface for ease of use.
+### 1. Web API
 
-## Requirements
+1. Open a terminal in the `final-exercise-DSH93` directory.
+2. Run the following command to start the Web API:
 
-- Python 3.7+
-- `openai` Python package
-- `python-pptx` Python package
-- `pytest` Python package for testing
+    ```sh
+    python ./web_api/scripts/app.py
+    ```
 
-## Usage
+### 2. Explainer
 
-You can run the script using the command line:
-```bash
-python main.py <relative_path>
-```
-Alternatively, you can run it directly and provide the paths when prompted:
+1. Open a new terminal in the `final-exercise-DSH93\explainer` directory.
+2. Run the following command to start the Explainer script:
 
-```bash
-python main.py
-```
-and then input from stdin <relative_path>
+    ```sh
+    python ./scripts/main.py
+    ```
 
+### 3. Client
+
+1. Open a new terminal in the `final-exercise-DSH93\client` directory.
+2. Run the following command to start the client:
+
+    ```sh
+    python ./scripts/client.py
+    ```
+3. Use the interactive interface to upload files or check their status:
+   - To use a file, enter the full path.
+   - If the file is in the `pptx_files` directory, enter the relative path:
+
+    ```sh
+    pptx_files\example_name.pptx
+    ```
 
 ## File Structure
 
-- `main.py`: The main script that handles input, calls the processing functions, and outputs the results.
-- `pptx_extractor.py`: Contains functions to extract text from the presentation and create asynchronous tasks.
-- `ai_summery.py`: Contains functions to interact with the OpenAI API and generate summaries.
-- `test_pptx_extractor_ai_summery.py`: Contains tests to verify the functionality of the script.
+The project is structured as follows:
 
-## Examples
-
-To summarize a presentation located at `DEMO.pptx`, run:
-
-```bash
-python main.py DEMO.pptx
 ```
-
-The output JSON file will be saved in the `outputs` directory with the same name as the input file (e.g., `DEMO.json`).
+final-exercise-DSH93/
+├── client/
+|    ├── logs/
+│    ├── pptx_files/
+│    ├── scripts/
+│         └── client.py
+|
+├── explainer/
+│    ├── logs/
+│    ├── outputs/
+│    ├── uploads/
+│    ├── scripts/
+│         ├── ai_api.py
+│         ├── async_tasks.py
+│         ├── main.py
+│         └── pptx_extractor.py
+|
+├── tests/
+│    ├── demo_files/
+│    │    └── DEMO.pptx  
+│    ├── outputs/
+│    └── test_pptx_extractor_ai_summery.py
+|
+├── web_api/
+│    ├── uploads/
+│    ├── scripts/
+│         └── app.py
+|
+├── .gitignore
+├── README.md
+└── requirements.txt
+```
 
 ## Testing
 
-To run the tests, use the following command:
+To run the tests, navigate to the `tests` directory and use the following command:
 
 ```bash
 pytest test_pptx_extractor_ai_summery.py
@@ -74,3 +100,10 @@ The script includes error handling for:
 - Timeouts during the API calls.
 - Slides without text.
 
+## Logging
+
+Logs are written to files in the `logs` directory within the `explainer` and `web_api` directories. Logs are rotated daily and kept for up to 5 days. Ensure that the `LOGS_FOLDER` is created and set up correctly in both the `main.py` and `app.py` scripts for proper logging.
+
+---
+
+This README provides a comprehensive guide to setting up, running, and testing the GPT PPTX Summarizer project. Make sure to follow the instructions carefully to ensure the project runs smoothly.

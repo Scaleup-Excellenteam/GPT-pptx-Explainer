@@ -42,6 +42,7 @@ def get_unprocessed_files():
     
 
 def runnig():
+    print(f'get directory: {os.getcwd()}')
     api_key = get_key()
     while True:
         unprocessed = get_unprocessed_files()
@@ -70,7 +71,6 @@ if __name__ == "__main__":
     presentation_path = args.presentation_path
     if not presentation_path:
         runnig()
-        exit(0)
         
     logger.info(f"Relative presentation path: {presentation_path}")
     

@@ -6,7 +6,6 @@ from pathlib import Path
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
-
 app = Flask(__name__)
 
 UPLOAD_FOLDER = r'explainer\uploads'
@@ -15,14 +14,24 @@ LOG_FOLDER = r'web_api\logs'
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+os.makedirs(LOG_FOLDER, exist_ok=True)
 
+# Logger setup
 log_handler = TimedRotatingFileHandler(os.path.join(LOG_FOLDER, 'web_api.log'), when="midnight", interval=1, backupCount=5)
 log_handler.suffix = "%Y-%m-%d"
 log_handler.setLevel(logging.INFO)
-logger = logging.getLogger('WebAPILogger')
-logger.addHandler(log_handler)
-logger.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+log_handler.setFormatter(formatter)
 
+# StreamHandler for console output
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
+stream_handler.setFormatter(formatter)
+
+logger = logging.getLogger('WebAPILogger')
+logger.setLevel(logging.INFO)
+logger.addHandler(log_handler)
+logger.addHandler(stream_handler)
 
 def generate_uid():
     return str(uuid.uuid4())
@@ -82,4 +91,5 @@ def get_status(uid):
         
 if __name__ == '__main__':
     print(f'Current working directory: {os.getcwd()}')
+    logger.info('Starting the web API...')
     app.run(debug=True)

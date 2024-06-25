@@ -6,16 +6,6 @@ import logging
 logger = logging.getLogger('ExplainerLogger')
 
 def extract_slide_text(slide, counter) -> str:
-    """
-    Extracts text from a slide and formats it with the slide number.
-
-    Args:
-        slide (Slide): The slide object from which to extract text.
-        counter (int): The slide number.
-
-    Returns:
-        str: The extracted text formatted with the slide number.
-    """
     slide_text = f"Slide number: {counter}\n"
     for shape in slide.shapes:
         if hasattr(shape, 'text'):
@@ -27,19 +17,6 @@ def extract_slide_text(slide, counter) -> str:
     return slide_text.strip()
 
 def extract_text_from_presentation(presentation_path: str) -> list[tuple[int, str]]:
-    """
-    Extracts text from all slides in a presentation.
-
-    Args:
-        presentation_path (str): The path to the presentation file.
-
-    Returns:
-        list[tuple[int, str]]: A list of tuples, each containing a slide number and its text content.
-    
-    Raises:
-        FileNotFoundError: If the presentation file does not exist.
-        Exception: If there is an error loading the presentation.
-    """
     if not os.path.isfile(presentation_path):
         raise FileNotFoundError(f"The presentation file '{presentation_path}' does not exist.")
     
@@ -58,19 +35,9 @@ def extract_text_from_presentation(presentation_path: str) -> list[tuple[int, st
     logger.info(f"Extracted text from {len(slides_text)} slides in {presentation_path}")
     return slides_text
 
-def text_to_json_file(summarized_text: dict[int, str], path: str) -> None:
-    """
-    Saves the summarized text to a JSON file.
-
-    Args:
-        summarized_text (dict[int, str]): A dictionary containing slide numbers and their corresponding summaries.
-        path (str): The path to the original presentation file.
-
-    Returns:
-        None
-    """
+def text_to_json_file(summarized_text: dict[int, str], path: str, output_dir: str = 'outputs') -> None:
     name = os.path.splitext(os.path.basename(path))[0]
-    output_directory = os.path.join(os.getcwd(), 'outputs') 
+    output_directory = os.path.join(os.getcwd(), output_dir) 
     os.makedirs(output_directory, exist_ok=True)
     
     json_file_name = os.path.join(output_directory, name + '.json')
