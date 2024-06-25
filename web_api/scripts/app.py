@@ -87,9 +87,13 @@ def get_status(uid):
             'filename': upload_files[0].rsplit('_', 2)[0],
             'timestamp': upload_files[0].rsplit('_', 2)[1],
             'summaries': None
-        })      
+        })
         
-if __name__ == '__main__':
+              
+def main():
     print(f'Current working directory: {os.getcwd()}')
     logger.info('Starting the web API...')
-    app.run(debug=True)
+    app.run(debug=True)        
+        
+if __name__ == '__main__':
+    main()

@@ -96,6 +96,8 @@ def interactive_mode():
         
         
             
-        
-if __name__ == "__main__":
+def main():
     interactive_mode()
+    
+if __name__ == "__main__":
+    main()

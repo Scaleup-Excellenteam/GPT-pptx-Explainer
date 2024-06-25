@@ -62,9 +62,8 @@ def runnig():
         time.sleep(2)
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Extract text from a PowerPoint presentation and summarize it")
+def main():
+    parser = argparse.ArgumentParser(description="Extract text from a PowerPoint presentation and summarize it")
     parser.add_argument("presentation_path", type=str, nargs="?", help="Relative path to the PowerPoint presentation file.")
     args = parser.parse_args()
 
@@ -87,3 +86,8 @@ if __name__ == "__main__":
         logger.info("Summarization completed and saved to JSON file.")
     except Exception as e:
         logger.error(f"Error processing file {presentation_path}: {e}")
+
+    
+
+if __name__ == "__main__":
+    main()
