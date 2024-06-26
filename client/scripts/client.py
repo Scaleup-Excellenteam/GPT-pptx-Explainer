@@ -7,12 +7,11 @@ from logging.handlers import TimedRotatingFileHandler
 import argparse
 
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
-LOGS_FOLDER = os.path.join(base_path,"client/", "logs")
-
+LOGS_FOLDER = os.path.join(base_path, "client/", "logs")
 
 os.makedirs(LOGS_FOLDER, exist_ok=True)
 
-log_handler = TimedRotatingFileHandler(os.path.join(LOGS_FOLDER, 'client.log'), when="midnight", interval=1, backupCount=5) # Keep 5 backup files
+log_handler = TimedRotatingFileHandler(os.path.join(LOGS_FOLDER, 'client.log'), when="midnight", interval=1, backupCount=5)
 log_handler.suffix = "%Y-%m-%d"
 log_handler.setLevel(logging.INFO)
 logger = logging.getLogger('ClientLogger')
@@ -20,61 +19,111 @@ logger.addHandler(log_handler)
 logger.setLevel(logging.INFO)
 
 class Status:
-    def __init__(self, status, filename, timestamp, summaries):
+    def __init__(self, status: str, filename: str, timestamp: str, summaries: dict):
+        """
+        Initializes a Status object.
+        
+        Parameters:
+        - status (str): The status of the processing.
+        - filename (str): The name of the file being processed.
+        - timestamp (str): The timestamp when the status was updated.
+        - summaries (dict): The summaries generated from the presentation.
+        """
         self.status = status
         self.filename = filename
         self.timestamp = timestamp
         self.summaries = summaries
+  
         
-    def is_completed(self):
+    def is_completed(self) -> bool:
+        """
+        Checks if the processing status is completed.
+        
+        Returns:
+        - bool: True if the status is 'completed', otherwise False.
+        """
         return self.status == "completed"
+  
     
     @staticmethod
-    def upload_file(file_path):
+    def upload_file(file_path: str) -> str:
+        """
+        Uploads a file to the server.
+        
+        Parameters:
+        - file_path (str): The path to the file to be uploaded.
+        
+        Returns:
+        - str: The UID of the uploaded file.
+        
+        Raises:
+        - Exception: If there is an error uploading the file.
+        """
         url = 'http://127.0.0.1:5000/upload'
         try:
             with open(file_path, 'rb') as file:
                 files = {'file': file}
                 response = requests.post(url, files=files)
-                response.raise_for_status()  # Raise an exception for 4xx/5xx status codes
+                response.raise_for_status()
                 uid = response.json()['uid']
                 logger.info(f"File uploaded successfully. UID: {uid}")
                 return uid
         except Exception as e:
             logger.error(f"Error uploading file: {e}")
             raise e
+   
         
     @staticmethod
-    def get_status(uid):
+    def get_status(uid: str) -> 'Status':
+        """
+        Retrieves the processing status of a file from the server.
+        
+        Parameters:
+        - uid (str): The UID of the file.
+        
+        Returns:
+        - Status: A Status object with the current status, filename, timestamp, and summaries.
+        
+        Raises:
+        - Exception: If there is an error retrieving the status.
+        """
         url = f'http://127.0.0.1:5000/status/{uid}'
         try:
-            response = requests.get(url)  # GET request
-            response.raise_for_status()  # Raise an exception for 4xx/5xx status codes
+            response = requests.get(url)
+            response.raise_for_status()
             data = response.json()
             logger.info(f"Status for UID {uid}: {data['status']}")
             return Status(data['status'], data['filename'], data['timestamp'], data['summaries'])
         except Exception as e:
             logger.error(f"Error getting status: {e}")
             raise e
-        
-      
-def input_path():
+
+
+
+def input_path() -> None:
+    """
+    Prompts the user to enter the path of the file to be uploaded and uploads it.
+    """
     while True:
-        path = input("Enter the path of the file or 'r' to return menu: ")
+        path = input("Enter the path file:  ")
         if path == "r": return
         if not os.path.exists(path):
-            logger.error(f"An error occurred: File not found. Please enter a valid path.")
+            logger.error("An error occurred: File not found. Please enter a valid path.")
             continue
         try:
             uid = Status.upload_file(path)
             print(f"Uploaded file with uid: {uid}")
-        
+            check_status()
+            return
         except Exception as e:
-                logger.error(f"An error occurred: {e}")
-                print(f"An error occurred: {e}")
-    
-    
-def check_status():
+            logger.error(f"An error occurred: {e}")
+            print(f"An error occurred: {e}")
+
+
+def check_status() -> None:
+    """
+    Prompts the user to enter the UID of the file and retrieves its processing status.
+    """
     uid = input("Enter the UID of the file: ")
     try:
         status = Status.get_status(uid)
@@ -84,23 +133,31 @@ def check_status():
     except Exception as e:
         print(f"An error occurred: {e}")
         logger.error(f"An error occurred: {e}")
-    
-        
-        
-def interactive_mode():
+
+
+def interactive_mode() -> None:
+    """
+    Provides an interactive mode for the user to upload files or check their status.
+    """
     while True:
-        choice = input("Enter 1 to upload a file, 2 to check status, or 3 to exit: ")
-        if choice != "1" and choice != "2" and choice != "3":
+        choice = input("\nPlease choose a number:\n"
+                       "1. Upload\n"
+                       "2. Check status\n"
+                       "3. Exit\n"
+                       "Enter your choice: ")
+
+        if choice not in ["1", "2", "3"]:
             print("Invalid choice. Please try again.")
             continue
         if choice == "3": exit(0)
         if choice == "1": input_path()
         if choice == "2": check_status()
-        
-        
-            
-def main():
+
+def main() -> None:
+    """
+    Main function to start the interactive mode.
+    """
     interactive_mode()
-    
+
 if __name__ == "__main__":
     main()

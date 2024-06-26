@@ -18,6 +18,7 @@ setup(
             'run_web_api=web_api.scripts.app:main',
             'run_explainer=explainer.scripts.main:main',
             'run_client=client.scripts.client:main',
+            'run_all=run_all_module.run_all:main', 
         ],
     },
     author='Dor Shukrun',
