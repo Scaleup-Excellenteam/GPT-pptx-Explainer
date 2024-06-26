@@ -46,36 +46,44 @@ The project is structured as follows:
 
 ```
 final-exercise-DSH93/
-├── client/
-|    ├── logs/
-│    ├── pptx_files/
-│    ├── scripts/
-│         └── client.py
-|
-├── explainer/
-│    ├── logs/
-│    ├── outputs/
-│    ├── uploads/
-│    ├── scripts/
-│         ├── ai_api.py
-│         ├── async_tasks.py
-│         ├── main.py
-│         └── pptx_extractor.py
-|
-├── tests/
-│    ├── demo_files/
-│    │    └── DEMO.pptx  
-│    ├── outputs/
-│    └── test_pptx_extractor_ai_summery.py
-|
-├── web_api/
-│    ├── uploads/
-│    ├── scripts/
-│         └── app.py
-|
-├── .gitignore
-├── README.md
-└── requirements.txt
+    ├── client/
+    |    ├── logs/
+    │    ├── pptx_files/
+    │    ├── scripts/
+    │    |    ├── client.py
+    |    |    └── __init__.py
+    |    |
+    |    └── __init__.py
+    |
+    ├── explainer/
+    │    ├── logs/
+    │    ├── outputs/
+    │    ├── uploads/
+    │    ├── scripts/
+    │    |    ├── ai_api.py
+    │    |    ├── async_tasks.py
+    │    |    ├── main.py
+    │    |    ├──pptx_extractor.py
+    |    |    └── __init__.py
+    |    └── __init__.py
+    |
+    ├── tests/
+    │    ├── demo_files/
+    │    │    └── DEMO.pptx  
+    │    ├── outputs/
+    │    └── test_pptx_extractor_ai_summery.py
+    |
+    ├── web_api/
+    |    ├── logs/
+    │    ├── scripts/
+    │    |     ├── app.py
+    |    |     └── __init__.py
+    |    └── __init__.py
+    |
+    ├── .gitignore
+    ├── README.md
+    ├── requirements.txt
+    └── setup.py
 ```
 
 ## Testing

@@ -2,19 +2,20 @@ import argparse
 import time
 import asyncio
 import os
-from explainer.scripts.pptx_extractor import extract_text_from_presentation, text_to_json_file
-from explainer.scripts.async_tasks import process_presentation
-from explainer.scripts.ai_api import load_api_key
+import sys
+from .pptx_extractor import extract_text_from_presentation, text_to_json_file
+from .async_tasks import process_presentation
+from .ai_api import load_api_key
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
-# Base path to the project root
-base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+# Base path to the project root (current working directory)
+base_path = os.getcwd()
 print(f"Base path: {base_path}")
 
-UPLOADS_FOLDER = os.path.join(base_path, "explainer/", "uploads")
-OUTPUTS_FOLDER = os.path.join(base_path, "explainer/", "outputs")
-LOGS_FOLDER = os.path.join(base_path, "explainer/", "logs")
+UPLOADS_FOLDER = os.path.join(base_path, "explainer/uploads")
+OUTPUTS_FOLDER = os.path.join(base_path, "explainer/outputs")
+LOGS_FOLDER = os.path.join(base_path, "explainer/logs")
 
 os.makedirs(UPLOADS_FOLDER, exist_ok=True)
 os.makedirs(OUTPUTS_FOLDER, exist_ok=True)
@@ -41,11 +42,12 @@ def get_unprocessed_files():
     all_files = {file.split(".")[0] for file in os.listdir(UPLOADS_FOLDER)}
     return all_files - processed_files
 
-def runnig():
-    print(f'get directory: {os.getcwd()}')
+def running():
+    print(f'Current directory: {os.getcwd()}')
     api_key = get_key()
     while True:
         unprocessed = get_unprocessed_files()
+        print(f'Unprocessed files: {unprocessed}')
         if not unprocessed:
             logger.info("No unprocessed files found. Sleeping for 10 seconds.")
             time.sleep(10)
@@ -57,8 +59,10 @@ def runnig():
                 summaries = asyncio.run(process_presentation(slides_text, api_key))
                 text_to_json_file(summaries, presentation_path, OUTPUTS_FOLDER)
                 logger.info(f"Summarization completed for {file}.")
+                print(f"Summarization completed for {file}.")
             except Exception as e:
                 logger.error(f"Error processing file {file}: {e}")
+                print(f"Error processing file {file}: {e}")
         time.sleep(2)
 
 def main():
@@ -68,8 +72,8 @@ def main():
 
     presentation_path = args.presentation_path
     if not presentation_path:
-        runnig()
-        
+        running()
+    
     logger.info(f"Relative presentation path: {presentation_path}")
     
     if not os.path.isfile(presentation_path):

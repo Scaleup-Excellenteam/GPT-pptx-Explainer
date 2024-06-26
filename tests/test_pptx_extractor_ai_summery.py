@@ -4,19 +4,21 @@ import pytest
 import json
 from pptx import Presentation
 
+# הוספת המסלול לתיקיית החבילה לספריית ה-PATH
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../explainer/scripts')))
 
-from pptx_extractor import extract_text_from_presentation, text_to_json_file
-from async_tasks import process_presentation
-from ai_api import load_api_key
-
+from explainer.scripts.pptx_extractor import extract_text_from_presentation, text_to_json_file
+from explainer.scripts.async_tasks import process_presentation
+from explainer.scripts.ai_api import load_api_key
 
 OUTPUTS_FOLDER = os.path.join(os.path.dirname(__file__), 'outputs')
+DEMO_FILES_FOLDER = os.path.join(os.path.dirname(__file__), 'demo_files')
 os.makedirs(OUTPUTS_FOLDER, exist_ok=True)
+os.makedirs(DEMO_FILES_FOLDER, exist_ok=True)
 
 @pytest.mark.asyncio
 async def test_presentation_summary():
-    presentation_path = r'demo_files\DEMO.pptx'
+    presentation_path = os.path.join(DEMO_FILES_FOLDER, 'DEMO.pptx')
     
     if not os.path.isfile(presentation_path):
         prs = Presentation()
@@ -26,7 +28,6 @@ async def test_presentation_summary():
         subtitle = slide.placeholders[1]
         title.text = "Hello, World!"
         subtitle.text = "python-pptx was here!"
-        os.makedirs(os.path.dirname(presentation_path), exist_ok=True)
         prs.save(presentation_path)
     
     api_key = os.getenv("OPENAI_API_KEY")
@@ -45,7 +46,7 @@ async def test_presentation_summary():
 
 @pytest.mark.asyncio
 async def test_empty_presentation():
-    presentation_path = 'demo_files/EMPTY.pptx'
+    presentation_path = os.path.join(DEMO_FILES_FOLDER, 'EMPTY.pptx')
     api_key = os.getenv("OPENAI_API_KEY")
 
     if not os.path.isfile(presentation_path):
@@ -72,7 +73,7 @@ async def test_empty_presentation():
 
 @pytest.mark.asyncio
 async def test_missing_presentation():
-    presentation_path = 'demo_files/MISSING.pptx'
+    presentation_path = os.path.join(DEMO_FILES_FOLDER, 'MISSING.pptx')
     api_key = os.getenv("OPENAI_API_KEY")
 
     assert api_key is not None, "API key is not set in environment variables"
@@ -83,7 +84,7 @@ async def test_missing_presentation():
 
 @pytest.mark.asyncio
 async def test_malformed_presentation():
-    presentation_path = 'demo_files/MALFORMED.pptx'
+    presentation_path = os.path.join(DEMO_FILES_FOLDER, 'MALFORMED.pptx')
     api_key = os.getenv("OPENAI_API_KEY")
 
     if not os.path.isfile(presentation_path):

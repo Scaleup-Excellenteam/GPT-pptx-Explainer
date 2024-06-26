@@ -1,5 +1,5 @@
 import asyncio
-from ai_api import generate_summary
+from .ai_api import generate_summary
 import logging
 
 logger = logging.getLogger('ExplainerLogger')
