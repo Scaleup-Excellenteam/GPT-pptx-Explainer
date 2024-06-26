@@ -10,6 +10,10 @@ from pptx_extractor import extract_text_from_presentation, text_to_json_file
 from async_tasks import process_presentation
 from ai_api import load_api_key
 
+
+OUTPUTS_FOLDER = os.path.join(os.path.dirname(__file__), 'outputs')
+os.makedirs(OUTPUTS_FOLDER, exist_ok=True)
+
 @pytest.mark.asyncio
 async def test_presentation_summary():
     presentation_path = r'demo_files\DEMO.pptx'
@@ -31,11 +35,9 @@ async def test_presentation_summary():
 
     slides_text = extract_text_from_presentation(presentation_path)
     summaries = await process_presentation(slides_text, api_key)
-    text_to_json_file(summaries, presentation_path)
+    text_to_json_file(summaries, presentation_path, output_dir=OUTPUTS_FOLDER)
 
-    curr_dir = os.path.dirname(__file__)
-    print(curr_dir)
-    output_file = os.path.join(curr_dir, 'outputs', 'DEMO.json')
+    output_file = os.path.join(OUTPUTS_FOLDER, 'DEMO.json')
     assert os.path.isfile(output_file), "Output JSON file was not created"
 
     if os.path.isfile(output_file):
@@ -54,10 +56,9 @@ async def test_empty_presentation():
 
     slides_text = extract_text_from_presentation(presentation_path)
     summaries = await process_presentation(slides_text, api_key)
-    text_to_json_file(summaries, presentation_path)
+    text_to_json_file(summaries, presentation_path, output_dir=OUTPUTS_FOLDER)
     
-    curr_dir = os.path.dirname(__file__)
-    output_file = os.path.join(curr_dir, 'outputs', 'EMPTY.json')
+    output_file = os.path.join(OUTPUTS_FOLDER, 'EMPTY.json')
     assert os.path.isfile(output_file), "Output JSON file was not created"
 
     with open(output_file, 'r', encoding='utf-8') as file:

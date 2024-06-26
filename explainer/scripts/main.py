@@ -2,16 +2,19 @@ import argparse
 import time
 import asyncio
 import os
-from pptx_extractor import extract_text_from_presentation, text_to_json_file
-from async_tasks import process_presentation
-from ai_api import load_api_key
+from explainer.scripts.pptx_extractor import extract_text_from_presentation, text_to_json_file
+from explainer.scripts.async_tasks import process_presentation
+from explainer.scripts.ai_api import load_api_key
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
+# Base path to the project root
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+print(f"Base path: {base_path}")
 
-UPLOADS_FOLDER = r"uploads"
-OUTPUTS_FOLDER = r"outputs"
-LOGS_FOLDER = r"logs"
+UPLOADS_FOLDER = os.path.join(base_path, "explainer/", "uploads")
+OUTPUTS_FOLDER = os.path.join(base_path, "explainer/", "outputs")
+LOGS_FOLDER = os.path.join(base_path, "explainer/", "logs")
 
 os.makedirs(UPLOADS_FOLDER, exist_ok=True)
 os.makedirs(OUTPUTS_FOLDER, exist_ok=True)
@@ -24,7 +27,6 @@ logger = logging.getLogger('ExplainerLogger')
 logger.addHandler(log_handler)
 logger.setLevel(logging.INFO)
 
-
 def get_key():
     api_key = load_api_key()
     if not api_key:
@@ -33,13 +35,11 @@ def get_key():
     logger.info("Loaded OpenAI API key from environment.")
     return api_key
 
-
 def get_unprocessed_files():
     logger.info(f"Checking for unprocessed files in {UPLOADS_FOLDER}.")
     processed_files = {file.split(".")[0] for file in os.listdir(OUTPUTS_FOLDER)}
     all_files = {file.split(".")[0] for file in os.listdir(UPLOADS_FOLDER)}
     return all_files - processed_files
-    
 
 def runnig():
     print(f'get directory: {os.getcwd()}')
@@ -55,12 +55,11 @@ def runnig():
             try:
                 slides_text = extract_text_from_presentation(presentation_path)
                 summaries = asyncio.run(process_presentation(slides_text, api_key))
-                text_to_json_file(summaries, presentation_path)
+                text_to_json_file(summaries, presentation_path, OUTPUTS_FOLDER)
                 logger.info(f"Summarization completed for {file}.")
             except Exception as e:
                 logger.error(f"Error processing file {file}: {e}")
         time.sleep(2)
-
 
 def main():
     parser = argparse.ArgumentParser(description="Extract text from a PowerPoint presentation and summarize it")
@@ -82,12 +81,10 @@ def main():
     try:
         slides_text = extract_text_from_presentation(presentation_path)
         summaries = asyncio.run(process_presentation(slides_text, api_key))
-        text_to_json_file(summaries, presentation_path)
+        text_to_json_file(summaries, presentation_path, OUTPUTS_FOLDER)
         logger.info("Summarization completed and saved to JSON file.")
     except Exception as e:
         logger.error(f"Error processing file {presentation_path}: {e}")
-
-    
 
 if __name__ == "__main__":
     main()

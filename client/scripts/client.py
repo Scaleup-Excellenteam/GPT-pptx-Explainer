@@ -6,7 +6,10 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import argparse
 
-LOGS_FOLDER = r'logs'
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+LOGS_FOLDER = os.path.join(base_path,"client/", "logs")
+
+
 os.makedirs(LOGS_FOLDER, exist_ok=True)
 
 log_handler = TimedRotatingFileHandler(os.path.join(LOGS_FOLDER, 'client.log'), when="midnight", interval=1, backupCount=5) # Keep 5 backup files
@@ -72,9 +75,9 @@ def input_path():
     
     
 def check_status():
-    path = input("Enter the UID of the file: ")
+    uid = input("Enter the UID of the file: ")
     try:
-        status = Status.get_status(path)
+        status = Status.get_status(uid)
         print(f"Status: {status.status}")
         if status.is_completed():
             print(f"Summaries: {status.summaries}")

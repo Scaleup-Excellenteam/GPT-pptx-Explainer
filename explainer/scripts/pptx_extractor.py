@@ -4,6 +4,8 @@ import json
 import logging
 
 logger = logging.getLogger('ExplainerLogger')
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+
 
 def extract_slide_text(slide, counter) -> str:
     slide_text = f"Slide number: {counter}\n"
@@ -35,12 +37,16 @@ def extract_text_from_presentation(presentation_path: str) -> list[tuple[int, st
     logger.info(f"Extracted text from {len(slides_text)} slides in {presentation_path}")
     return slides_text
 
-def text_to_json_file(summarized_text: dict[int, str], path: str, output_dir: str = 'outputs') -> None:
+def text_to_json_file(summarized_text: dict[int, str], path: str, output_dir: str) -> None:
     name = os.path.splitext(os.path.basename(path))[0]
-    output_directory = os.path.join(os.getcwd(), output_dir) 
+    output_directory = output_dir
+    print(f"Output directory: {output_directory}")  
     os.makedirs(output_directory, exist_ok=True)
     
     json_file_name = os.path.join(output_directory, name + '.json')
+    print(f"JSON file name: {json_file_name}")  
     with open(json_file_name, 'w', encoding='utf-8') as writer:
         json.dump(summarized_text, writer, indent=4, ensure_ascii=False)
     logger.info(f"Summarized text saved to {json_file_name}")
+    print(f"Summarized text saved to {json_file_name}")  
+

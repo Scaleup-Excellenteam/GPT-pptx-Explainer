@@ -8,8 +8,10 @@ from logging.handlers import TimedRotatingFileHandler
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = r'explainer\uploads'
-OUTPUT_FOLDER = r'explainer\outputs'
+
+
+UPLOAD_FOLDER = os.path.join("explainer/", "uploads")
+OUTPUT_FOLDER = os.path.join("explainer/", "outputs")
 LOG_FOLDER = r'web_api\logs'
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
