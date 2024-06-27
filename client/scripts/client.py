@@ -134,11 +134,32 @@ def check_status() -> None:
         print(f"An error occurred: {e}")
         logger.error(f"An error occurred: {e}")
 
+def print_intro():
+    intro_message = """
+    \033[1;34m
+    ***********************************************
+    *                                             *
+    *                    CLIENT                    *
+    *                                             *
+    ***********************************************
+    * This is the client interface for the        *
+    * explainer project.                          *
+    *                                             *
+    * Usage:                                      *
+    *   - Use this interface to upload files and  *
+    *     check their status.                     *
+    *                                             *
+    ***********************************************
+    \033[0m
+    """
+    print(intro_message)
+
 
 def interactive_mode() -> None:
     """
     Provides an interactive mode for the user to upload files or check their status.
     """
+    print_intro()
     while True:
         choice = input("\nPlease choose a number:\n"
                        "1. Upload\n"

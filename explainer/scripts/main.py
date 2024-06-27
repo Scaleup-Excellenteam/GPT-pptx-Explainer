@@ -57,11 +57,34 @@ def get_unprocessed_files() -> set:
     return all_files - processed_files
 
 
+def print_intro():
+    intro_message = """
+    \033[1;32m
+    ***********************************************
+    *                                             *
+    *                  EXPLAINER                  *
+    *                                             *
+    ***********************************************
+    * This is the main explainer script.          *
+    * The interface with the project is done      *
+    * through the client.                         *
+    *                                             *
+    * Usage:                                      *
+    *   - Run this script to start the explainer  *
+    *     process.                                *
+    *                                             *
+    ***********************************************
+    \033[0m
+    """
+    print(intro_message)
+
 def running() -> None:
     """
     Continuously checks for unprocessed files and processes them.
     """
     api_key = get_key()
+    
+    print_intro()
     while True:
         unprocessed = get_unprocessed_files()
         if not unprocessed:

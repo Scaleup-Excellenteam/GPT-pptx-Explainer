@@ -16,14 +16,14 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 os.makedirs(LOG_FOLDER, exist_ok=True)
 
-# Logger setup
+
 log_handler = TimedRotatingFileHandler(os.path.join(LOG_FOLDER, 'web_api.log'), when="midnight", interval=1, backupCount=5)
 log_handler.suffix = "%Y-%m-%d"
 log_handler.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 log_handler.setFormatter(formatter)
 
-# StreamHandler for console output
+
 stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.INFO)
 stream_handler.setFormatter(formatter)
@@ -117,8 +117,27 @@ def get_status(uid: str):
             'summaries': None
         })
 
+def print_intro():
+    intro_message = """
+    \033[1;35m
+    ***********************************************
+    *                                             *
+    *                   WEB API                   *
+    *                                             *
+    ***********************************************
+    * This is the main web API for the explainer  *
+    * project.                                    *
+    *                                             *
+    * Usage:                                      *
+    *   - Run this script to start the web API.   *
+    *                                             *
+    ***********************************************
+    \033[0m
+    """
+    print(intro_message)
+
 def main() -> None:
-    logger.info('Starting the web API...')
+    print_intro()
     app.run(debug=True)
 
 if __name__ == '__main__':

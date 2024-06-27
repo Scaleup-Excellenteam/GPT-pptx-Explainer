@@ -71,7 +71,10 @@ final-exercise-DSH93/
     │    ├── demo_files/
     │    │    └── DEMO.pptx  
     │    ├── outputs/
-    │    └── test_pptx_extractor_ai_summery.py
+    |    ├── conftest.py
+    |    ├── test_client.py
+    |    ├── test_explainer.py
+    │    └── test_web_api.py
     |
     ├── web_api/
     |    ├── logs/
