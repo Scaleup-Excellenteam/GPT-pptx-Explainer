@@ -4,19 +4,20 @@ import os
 from datetime import datetime
 import logging
 from logging.handlers import TimedRotatingFileHandler
-import argparse
+from configs import client_config as config
 
-base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
-LOGS_FOLDER = os.path.join(base_path, "client/", "logs")
 
-os.makedirs(LOGS_FOLDER, exist_ok=True)
 
-log_handler = TimedRotatingFileHandler(os.path.join(LOGS_FOLDER, 'client.log'), when="midnight", interval=1, backupCount=5)
-log_handler.suffix = "%Y-%m-%d"
-log_handler.setLevel(logging.INFO)
-logger = logging.getLogger('ClientLogger')
-logger.addHandler(log_handler)
-logger.setLevel(logging.INFO)
+def setup_logger():
+    log_handler = TimedRotatingFileHandler(config.LOG_FILE, when="midnight", interval=1, backupCount=5)
+    log_handler.suffix = "%Y-%m-%d"
+    log_handler.setLevel(logging.INFO)
+    logger = logging.getLogger('ClientLogger')
+    logger.addHandler(log_handler)
+    logger.setLevel(logging.INFO)
+    return logger
+
+logger = setup_logger()
 
 class Status:
     def __init__(self, status: str, filename: str, timestamp: str, summaries: dict):
@@ -59,7 +60,7 @@ class Status:
         Raises:
         - Exception: If there is an error uploading the file.
         """
-        url = 'http://127.0.0.1:5000/upload'
+        url = config.UPLOAD_URL
         try:
             with open(file_path, 'rb') as file:
                 files = {'file': file}
@@ -87,7 +88,7 @@ class Status:
         Raises:
         - Exception: If there is an error retrieving the status.
         """
-        url = f'http://127.0.0.1:5000/status/{uid}'
+        url = f'{config.STATUS_URL}/{uid}'
         try:
             response = requests.get(url)
             response.raise_for_status()
@@ -97,8 +98,6 @@ class Status:
         except Exception as e:
             logger.error(f"Error getting status: {e}")
             raise e
-
-
 
 def input_path() -> None:
     """
@@ -118,7 +117,6 @@ def input_path() -> None:
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             print(f"An error occurred: {e}")
-
 
 def check_status() -> None:
     """
@@ -153,7 +151,6 @@ def print_intro():
     \033[0m
     """
     print(intro_message)
-
 
 def interactive_mode() -> None:
     """
