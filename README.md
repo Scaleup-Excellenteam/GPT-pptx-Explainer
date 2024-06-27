@@ -1,7 +1,3 @@
-
-
----
-
 # README - GPT PPTX Summarizer
 
 ## Overview
@@ -38,7 +34,7 @@ The project uses configuration files for different modules. Ensure you have the 
 1. Open a terminal in the `final-exercise-DSH93` directory.
 2. Run the following command to start the Web API:
     ```sh
-    python ./web_api/scripts/app.py
+    python -m web_api.scripts.app
     ```
 
 ### 2. Explainer
@@ -46,7 +42,7 @@ The project uses configuration files for different modules. Ensure you have the 
 1. Open a new terminal in the `final-exercise-DSH93\explainer` directory.
 2. Run the following command to start the Explainer script:
     ```sh
-    python ./scripts/main.py
+    python -m explainer.scripts.main
     ```
 
 ### 3. Client
@@ -54,7 +50,7 @@ The project uses configuration files for different modules. Ensure you have the 
 1. Open a new terminal in the `final-exercise-DSH93\client` directory.
 2. Run the following command to start the client:
     ```sh
-    python ./scripts/client.py
+    python -m client.scripts.client
     ```
 
 3. Use the interactive interface to upload files or check their status:
@@ -69,6 +65,11 @@ The project uses configuration files for different modules. Ensure you have the 
 You can run all the modules simultaneously using the provided `run_all.exe`. Simply execute:
 ```sh
 run_all.exe
+```
+
+Alternatively, you can run all the modules using Python:
+```sh
+python -m run_all_module.run_all
 ```
 
 ## File Structure
