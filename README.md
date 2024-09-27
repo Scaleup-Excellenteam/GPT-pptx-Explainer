@@ -1,164 +1,168 @@
-# The GPT-Explainer Project
+# README - GPT PPTX Summarizer
 
-## Introduction
+## Overview
 
-Learning Software Development is hard. Especially when you can't understand the lecturer's presentations. Wouldn't it be
-nice to have someone explain them for you?
+GPT-Explainer is a Python-based project designed to assist computer science students in understanding their lecture presentations more effectively. The script takes a PowerPoint presentation (`.pptx` file), extracts the text from each slide, sends the text to the GPT-3.5 AI model, and saves the summarized results in a JSON file. This tool is particularly useful for clarifying complex concepts and providing detailed explanations.
 
-You are going to implement a Python script that explains Powerpoint presentations using the GPT-3.5 AI model. The script
-will take as input a presentation file, send the text from each slide to GPT, and save the results together in an output
-file.
+## Setup
 
-Cool, right?
+### Installation
 
-## Requirements
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/yourusername/final-exercise-DSH93.git
+    cd final-exercise-DSH93
+    ```
 
-### Flow of Operation
+2. Install the package:
+    ```sh
+    pip install .
+    ```
 
-Your script should do the following:
+### Configuration
 
-1. Take the path of a `.pptx` file.
-2. [Parse the presentation](#parsing-powerpoint-files) to get its data.
-3. Go through every slide separately, and:
-    1. Extract all the text from all text boxes.
-    2. Insert the text into an appropriate prompt for GPT.
-    3. Send the prompt in a request to the [OpenAI API](#integration-with-openai).
-    4. Extract the AI's reply from the response.
-4. Gather the explanations for all the slides in a list.
-5. Save the list in a JSON file.
+The project uses configuration files for different modules. Ensure you have the following files in the `configs` directory:
 
-### Asynchronous Execution
+- `client_config.py`
+- `explainer_config.py`
+- `web_api_config.py`
 
-It takes time for the GPT models to generate responses. If we send the slides one after another, we will have to wait
-for a very long time. Therefore, we will make asynchronous API calls, so that all the slides are processed at the same
-time.
+## Usage Instructions
 
-Use Python's `async/await` syntax, together with the builtin `asyncio` package.
+### 1. Web API
 
-> Tip: [Here](https://realpython.com/async-io-python/) is an awesome guide.
+1. Open a terminal in the `final-exercise-DSH93` directory.
+2. Run the following command to start the Web API:
+    ```sh
+    python -m web_api.scripts.app
+    ```
 
-### Extra Specifications
+### 2. Explainer
 
-- Your code should ignore slides without text.
-- Your code should handle weird whitespaces within presentation text.
-- The name of the output file should be the same as the original presentation (but with a `.json` suffix).
-- Add a single "system test" using pytest that runs the entire script using an input demo presentation, and checks that the output file exists. Make sure to include the presentation in github repository, and acces it using a relative path. 
+1. Open a new terminal in the `final-exercise-DSH93\explainer` directory.
+2. Run the following command to start the Explainer script:
+    ```sh
+    python -m explainer.scripts.main
+    ```
 
-### Bonus Requirements
+### 3. Client
 
-- Add a timeout to the requests you make to the OpenAI API.
-- Add a convenient CLI interface for your script (use [`argparse`](https://docs.python.org/3/library/argparse.html)).
-- Handle errors raised while processing a slide. Instead of allowing the entire program to crash, save the explanations
-  for the other slides as usual, and put an informative error message for the slide that failed.
-- Put your [OpenAI API key](#making-api-calls) in a
-  permanent [environment variable](https://www.twilio.com/blog/how-to-set-environment-variables-html)
-  called `OPENAI_API_KEY`. Your code should load it from there.
+1. Open a new terminal in the `final-exercise-DSH93\client` directory.
+2. Run the following command to start the client:
+    ```sh
+    python -m client.scripts.client
+    ```
 
-> Tip: [Here](https://platform.openai.com/docs/guides/error-codes/python-library-error-types) is a list of potential
-> errors you might encounter.
+3. Use the interactive interface to upload files or check their status:
+    - To use a file, enter the full path.
+    - If the file is in the `pptx_files` directory, enter the relative path:
+    ```sh
+    pptx_files\example_name.pptx
+    ```
 
-## Parsing Powerpoint Files
+### Running All Modules
 
-There are several Python packages that can help you parse `.pptx` files and extract their data.
+You can run all the modules simultaneously using the provided `run_all.exe`. Simply execute:
+```sh
+run_all.exe
+```
 
-We recommend installing the [`python-pptx`](https://pypi.org/project/python-pptx/) package.
+Alternatively, you can run all the modules using Python:
+```sh
+python -m run_all_module.run_all
+```
 
-> Tip: The documentation of `python-pptx` is a bit annoying. Concentrate on the parts that are relevant for what you
-> need.
+## File Structure
 
-## Integration with OpenAI
+The project is structured as follows:
 
-### Making API Calls
+```
+final-exercise-DSH93/
+    ├── client/
+    │    ├── logs/
+    │    ├── pptx_files/
+    │    ├── scripts/
+    │    │    ├── client.py
+    │    │    └── __init__.py
+    │    └── __init__.py
+    ├── configs/
+    │    ├── __init__.py
+    │    ├── client_config.py
+    │    ├── explainer_config.py
+    │    ├── web_api_config.py
+    ├── explainer/
+    │    ├── logs/
+    │    ├── outputs/
+    │    ├── uploads/
+    │    ├── scripts/
+    │    │    ├── ai_api.py
+    │    │    ├── async_tasks.py
+    │    │    ├── main.py
+    │    │    ├── pptx_extractor.py
+    │    │    └── __init__.py
+    │    └── __init__.py
+    ├── run_all_module/
+    │    ├── __init__.py
+    │    ├── run_all.py
+    ├── tests/
+    │    ├── demo_files/
+    │    │    └── DEMO.pptx  
+    │    ├── outputs/
+    │    ├── uploads/   
+    │    ├── conftest.py
+    │    ├── test_client.py
+    │    ├── test_explainer.py
+    │    └── test_web_api.py
+    ├── web_api/
+    │    ├── logs/
+    │    ├── scripts/
+    │    │    ├── app.py
+    │    │    └── __init__.py
+    │    └── __init__.py
+    ├── .gitignore
+    ├── pyproject.toml
+    ├── README.md
+    ├── requirements.txt
+    └── setup.py
+```
 
-To send requests you will need to create an OpenAI account on
-the [OpenAI website](https://platform.openai.com/docs/overview). There is a "Sign up" button on the top-right.
+## Testing
 
-You will then need to [generate an API key](https://platform.openai.com/api-keys), that will be your identifier
-when using the API. Don't put this API key anywhere in your code! It is private. You don't want anybody else to use your
-API key (why?).
+To run the tests, navigate to the `tests` directory and use the following command:
 
-Also, instead of sending HTTP requests directly, it is much easier to use the
-official [`openai`](https://pypi.org/project/openai/) Python package to do that for you.
-Its documentation is on the same page. The full API docs are [here](https://github.com/openai/openai-python/blob/main/api.md).
-Focus on the part about async usage.
+```bash
+pytest
+```
 
-### Choosing an AI Model
+### Tests Include:
 
-OpenAI is a company that develops [AI models](https://platform.openai.com/docs/models/overview). Each model specializes
-in something different. For this project, it is best to use the `gpt-3.5-turbo` model (it's also the model used by the
-ChatGPT website).
+- **Client Tests** (`test_client.py`)
+  - `test_upload_file`: Tests the file upload functionality.
+  - `test_get_status_completed`: Tests fetching the status when processing is completed.
+  - `test_get_status_in_progress`: Tests fetching the status when processing is in progress.
 
-### Writing a Good Prompt
+- **Explainer Tests** (`test_explainer.py`)
+  - `test_empty_presentation`: Tests handling of an empty presentation.
+  - `test_missing_presentation`: Tests handling of a non-existent presentation file.
+  - `test_malformed_presentation`: Tests handling of a malformed presentation file.
 
-You should think carefully how to ask GPT in a way that will give you the best answers. You cannot just throw some text
-from a presentation and expect it to know what you want. Here are a few good questions to ask yourself when designing a
-prompt:
+- **Web API Tests** (`test_web_api.py`)
+  - `test_upload_file`: Tests the file upload endpoint.
+  - `test_get_status_completed`: Tests the status endpoint for completed files.
+  - `test_get_status_in_progress`: Tests the status endpoint for files in progress.
 
-- How can I clearly explain what I want the AI to do for me?
-- Which information is relevant besides the text of the slide?
-- Is there any additional background that might be useful for the AI to know?
+## Error Handling
 
-> Tip: You can easily test your prompts on [ChatGPT](https://chatgpt.com/).
+The script includes error handling for:
+- Missing or incorrect file paths.
+- Issues with loading the presentation file.
+- Timeouts during the API calls.
+- Slides without text.
 
-### Limits
+## Logging
 
-When you create a new OpenAI account you will be able to use the API for free for 3 weeks, or until you use a certain
-amount of [tokens](https://platform.openai.com/docs/introduction/tokens). After that you must pay. You can check how
-much you've spent on your [account page](https://platform.openai.com/usage).
+Logs are written to files in the `logs` directory within the `client`, `explainer`, and `web_api` directories. Logs are rotated daily and kept for up to 5 days. Ensure that the `LOGS_FOLDER` is created and set up correctly in the configuration files for proper logging.
 
-Don't worry! You should have enough free tokens so you don't have to pay during this project. After 3 weeks you can
-create a new account with a different email (and phone number), and generate a new API key.
+---
 
-Also, free users have a [rate limit](https://platform.openai.com/settings/organization/limits) of 3 requests per minute. If you
-try to send 20 requests at the same time, don't be surprised if you get errors...
-
-## Grading
-
-Your work will be graded based on the following criteria:
-
-- The code passes all mandatory [requirements](#technical-requirements).
-- Code quality
-    - Readable code
-    - Indicative names
-    - Spacing and indentation
-    - Avioding duplicate code
-    - Comments and documentation
-    - Proper division of logic into small functions
-    - Proper division of modules into separate files
-- Proper usage of Git
-    - Small and standalone commits
-    - Descriptive commit messages
-    - Working on different features in separate branches
-    - Creating a proper pull request
-    - Not uploading junk files that are not part of the code (use `.gitignore`)
-- [Bonus requirements](#bonus-requirements) you may have implemented
-
-> Tip: Here are some [guidelines](https://gist.github.com/luismts/495d982e8c5b1a0ced4a57cf3d93cf60) on good commit
-> practices.
-
-## Some Extra Tips
-
-- Before you write code:
-    - Make sure you have a vision for the flow and architecture of your project.
-    - Play a bit with the different packages. Not too much. Just to feel comfortable.
-    - Ask yourself the following:
-        - Which logical parts does my project have?
-        - Which files should I have?
-        - Which functions should I write?
-        - Which branches should I open?
-        - Which parts of code will depend on others? Which won't?
-        - Which features are central? Which are less important?
-- Good questions to ask while coding:
-    - Do these changes really belong in the same commit?
-    - Can I give a name to this piece of logic and make a separate function?
-    - Do I really have to fix this issue right now?
-    - Is this really worth the time I'm investing?
-    - If I want to add extra features later, will it be easy?
-    - If someone else looks at this code, will they hate me?
-    - Will I understand this commit message in a week from now?
-- Before you submit:
-    - Code-review yourself! It's a good practice.
-
-## Good Luck!
-
-![Hunger Games](https://img.memegenerator.net/instances/47706789.jpg)
+This README provides a comprehensive guide to setting up, running, and testing the GPT PPTX Summarizer project. Make sure to follow the instructions carefully to ensure the project runs smoothly.
